@@ -55,4 +55,5 @@ public class Episode {
     public void setDescription(String description) { this.description = description; }
     public void setDurationMinutes(Integer durationMinutes) { this.durationMinutes = durationMinutes; }
     public void setAirDate(LocalDate airDate) { this.airDate = airDate; }
+    public void setSeason(Season season) { this.season = season; }
 }

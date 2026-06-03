@@ -3,39 +3,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html">
-
 <ui:composition template="/WEB-INF/templates/BasicTemplate.xhtml">
-
-    <ui:define name="title">Inscription</ui:define>
-
+    <ui:define name="title">Sign up</ui:define>
     <ui:define name="content">
-
-        <h2>Créer un compte</h2>
-
-        <h:form>
-            <h:outputLabel value="Nom d'utilisateur : "/><br/>
-            <h:inputText value="#{accountBean.username}" required="true"/><br/><br/>
-
-            <h:outputLabel value="Mot de passe : "/><br/>
-            <h:inputSecret value="#{accountBean.password}" required="true"/><br/><br/>
-
-            <h:outputLabel value="Email : "/><br/>
-            <h:inputText value="#{accountBean.email}"/><br/><br/>
-
-            <h:outputLabel value="Nom affiché : "/><br/>
-            <h:inputText value="#{accountBean.displayName}"/><br/><br/>
-
-            <h:commandButton value="S'inscrire" action="#{accountBean.register}"/>
-            <br/><br/>
-
-            <h:outputText value="#{accountBean.errorMessage}" style="color:red"
-                          rendered="#{not empty accountBean.errorMessage}"/>
-        </h:form>
-
-        <br/>
-        <h:link value="Déjà un compte ? Se connecter" outcome="login"/>
-
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <h2 class="mb-4">Create an account</h2>
+                <div class="card p-4">
+                    <h:form>
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <h:inputText value="#{accountBean.username}" required="true" styleClass="form-control"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <h:inputSecret value="#{accountBean.password}" required="true" styleClass="form-control"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <h:inputText value="#{accountBean.email}" styleClass="form-control"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Display name</label>
+                            <h:inputText value="#{accountBean.displayName}" styleClass="form-control"/>
+                        </div>
+                        <h:commandButton value="Sign up" action="#{accountBean.register}"
+                                         styleClass="btn btn-primary w-100"/>
+                        <h:outputText value="#{accountBean.errorMessage}"
+                                      styleClass="text-danger d-block mt-2"
+                                      rendered="#{not empty accountBean.errorMessage}"/>
+                    </h:form>
+                </div>
+                <p class="mt-3 text-center">
+                    Already have an account? <h:link value="Login" outcome="login"/>
+                </p>
+            </div>
+        </div>
     </ui:define>
-
 </ui:composition>
 </html>

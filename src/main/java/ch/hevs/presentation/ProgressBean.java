@@ -31,4 +31,10 @@ public class ProgressBean {
         EpisodeProgress ep = progressService.findOrCreateEpisodeProgress(viewer, episode);
         return ep.getStatus();
     }
+
+    public ProgressStatus getSeriesStatus(Series series) {
+        Viewer viewer = accountService.getLoggedViewer();
+        if (viewer == null) return ProgressStatus.NOT_STARTED;
+        return progressService.computeSeriesStatus(viewer, series);
+    }
 }

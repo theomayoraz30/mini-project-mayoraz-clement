@@ -64,4 +64,24 @@ public class SeriesService implements Serializable {
         Series s = em.find(Series.class, id);
         if (s != null) em.remove(s);
     }
+
+    @Transactional
+    public void saveSeason(Season season) {
+        em.persist(season);
+    }
+
+    @Transactional
+    public Season findSeasonById(Long id) {
+        return em.find(Season.class, id);
+    }
+
+    public List<Season> findAllSeasons() {
+        return em.createQuery("SELECT s FROM Season s ORDER BY s.series.title, s.seasonNumber", Season.class)
+                .getResultList();
+    }
+
+    @Transactional
+    public void saveEpisode(Episode episode) {
+        em.persist(episode);
+    }
 }

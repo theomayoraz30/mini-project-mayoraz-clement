@@ -25,10 +25,21 @@ public class ProgressService implements Serializable {
 
         Series series = episode.getSeason().getSeries();
         SeriesProgress sp = findOrCreateSeriesProgress(viewer, series);
-        if (sp.getStatus() == ProgressStatus.NOT_STARTED) {
+
+        long totalEpisodes = em.createQuery(
+                "SELECT COUNT(e) FROM Episode e WHERE e.season.series = :s", Long.class)
+                .setParameter("s", series).getSingleResult();
+        long watchedEpisodes = em.createQuery(
+                "SELECT COUNT(ep) FROM EpisodeProgress ep WHERE ep.viewer = :v AND ep.episode.season.series = :s AND ep.status = :ws", Long.class)
+                .setParameter("v", viewer).setParameter("s", series).setParameter("ws", WatchStatus.WATCHED)
+                .getSingleResult();
+
+        if (watchedEpisodes >= totalEpisodes) {
+            sp.setStatus(ProgressStatus.WATCHED);
+        } else {
             sp.setStatus(ProgressStatus.IN_PROGRESS);
-            em.merge(sp);
         }
+        em.merge(sp);
     }
 
     @Transactional
@@ -59,6 +70,24 @@ public class ProgressService implements Serializable {
         SeriesProgress sp = new SeriesProgress(viewer, series);
         em.persist(sp);
         return sp;
+    }
+
+    @Transactional
+    public ProgressStatus computeSeriesStatus(Viewer viewer, Series series) {
+        long total = em.createQuery(
+                "SELECT COUNT(e) FROM Episode e WHERE e.season.series = :s", Long.class)
+                .setParameter("s", series).getSingleResult();
+
+        if (total == 0) return ProgressStatus.NOT_STARTED;
+
+        long watched = em.createQuery(
+                "SELECT COUNT(ep) FROM EpisodeProgress ep WHERE ep.viewer = :v AND ep.episode.season.series = :s AND ep.status = :ws", Long.class)
+                .setParameter("v", viewer).setParameter("s", series).setParameter("ws", WatchStatus.WATCHED)
+                .getSingleResult();
+
+        if (watched == 0) return ProgressStatus.NOT_STARTED;
+        if (watched >= total) return ProgressStatus.WATCHED;
+        return ProgressStatus.IN_PROGRESS;
     }
 
     public List<SeriesProgress> getProgressForViewer(Viewer viewer) {

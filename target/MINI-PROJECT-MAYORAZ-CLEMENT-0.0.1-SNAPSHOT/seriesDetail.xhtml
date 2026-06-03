@@ -6,96 +6,141 @@
       xmlns:f="http://java.sun.com/jsf/core">
 
 <ui:composition template="/WEB-INF/templates/BasicTemplate.xhtml">
-
     <ui:define name="title">#{seriesBean.selectedSeries.title}</ui:define>
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{accountBean.requireLogin}"/>
+    </f:metadata>
 
     <ui:define name="content">
 
-        <h:link value="← Retour à l'accueil" outcome="index"/>
-        <br/><br/>
+        <h:link value="← Back" outcome="index" styleClass="btn btn-secondary btn-sm mb-4"/>
 
         <h:panelGroup rendered="#{seriesBean.selectedSeries != null}">
 
-            <h2>#{seriesBean.selectedSeries.title}
-                (#{seriesBean.selectedSeries.releaseYear})</h2>
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <h:panelGroup rendered="#{not empty seriesBean.selectedSeries.posterUrl}">
+                        <h:graphicImage value="#{seriesBean.selectedSeries.posterUrl}"
+                                        styleClass="img-fluid rounded shadow"/>
+                    </h:panelGroup>
+                </div>
+                <div class="col-md-9">
+                    <h1>#{seriesBean.selectedSeries.title}
+                        <small class="text-muted fs-5">(#{seriesBean.selectedSeries.releaseYear})</small>
+                    </h1>
 
-            <h:graphicImage value="#{seriesBean.selectedSeries.posterUrl}" width="200"
-                            rendered="#{not empty seriesBean.selectedSeries.posterUrl}"/>
+                    <h:panelGroup rendered="#{accountService.viewer}">
+                        <h:panelGroup rendered="#{progressBean.getSeriesStatus(seriesBean.selectedSeries).name() == 'NOT_STARTED'}">
+                            <span class="badge bg-secondary mb-2">Not started</span>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{progressBean.getSeriesStatus(seriesBean.selectedSeries).name() == 'IN_PROGRESS'}">
+                            <span class="badge bg-primary mb-2">In progress</span>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{progressBean.getSeriesStatus(seriesBean.selectedSeries).name() == 'WATCHED'}">
+                            <span class="badge bg-success mb-2">Completed ✓</span>
+                        </h:panelGroup>
+                    </h:panelGroup>
 
-            <p>#{seriesBean.selectedSeries.description}</p>
+                    <p class="mt-2">#{seriesBean.selectedSeries.description}</p>
+                </div>
+            </div>
 
-            <hr/>
-            <h3>Saisons et épisodes</h3>
+            <h3>Seasons &amp; Episodes</h3>
+            <div class="accordion mb-4" id="accordionSeasons">
+                <ui:repeat value="#{seriesBean.selectedSeries.seasons}" var="season" varStatus="vs">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#s#{vs.index}">
+                                Season #{season.seasonNumber}
+                                <h:panelGroup rendered="#{not empty season.title}">
+                                    <span class="ms-2 fw-normal text-muted"> — #{season.title}</span>
+                                </h:panelGroup>
+                            </button>
+                        </h2>
+                        <div id="s#{vs.index}" class="accordion-collapse collapse">
+                            <div class="accordion-body p-0">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th style="width:50px">#</th>
+                                            <th>Title</th>
+                                            <th style="width:90px">Duration</th>
+                                            <th style="width:130px" rendered="#{accountService.viewer}">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ui:repeat value="#{season.episodes}" var="ep">
+                                            <tr>
+                                                <td class="text-muted">#{ep.episodeNumber}</td>
+                                                <td>#{ep.title}</td>
+                                                <td class="text-muted small">
+                                                    <h:panelGroup rendered="#{not empty ep.durationMinutes}">#{ep.durationMinutes} min</h:panelGroup>
+                                                    <h:panelGroup rendered="#{empty ep.durationMinutes}">—</h:panelGroup>
+                                                </td>
+                                                <td rendered="#{accountService.viewer}">
+                                                    <h:form>
+                                                        <h:commandButton value="Mark as watched"
+                                                                         action="#{progressBean.markWatched(ep)}"
+                                                                         styleClass="btn btn-outline-dark btn-sm"
+                                                                         rendered="#{progressBean.getEpisodeStatus(ep).name() == 'NOT_WATCHED'}"/>
+                                                        <h:panelGroup rendered="#{progressBean.getEpisodeStatus(ep).name() == 'WATCHED'}">
+                                                            <span class="badge bg-success">✓ Watched</span>
+                                                        </h:panelGroup>
+                                                    </h:form>
+                                                </td>
+                                            </tr>
+                                        </ui:repeat>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </ui:repeat>
+            </div>
 
-            <h:dataTable value="#{seriesBean.selectedSeries.seasons}" var="season">
-                <h:column>
-                    <h4>Saison #{season.seasonNumber} — #{season.title}</h4>
-                    <h:dataTable value="#{season.episodes}" var="episode"
-                                 border="1" cellpadding="5">
-                        <h:column>
-                            <f:facet name="header">Ep.</f:facet>
-                            #{episode.episodeNumber}
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">Titre</f:facet>
-                            #{episode.title}
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">Durée</f:facet>
-                            #{episode.durationMinutes} min
-                        </h:column>
-                        <h:column rendered="#{accountService.viewer}">
-                            <f:facet name="header">Statut</f:facet>
-                            <h:form>
-                                <h:commandButton value="Marquer vu"
-                                                 action="#{progressBean.markWatched(episode)}"
-                                                 rendered="#{progressBean.getEpisodeStatus(episode).name() == 'NOT_WATCHED'}"/>
-                                <h:outputText value="✓ Regardé"
-                                              rendered="#{progressBean.getEpisodeStatus(episode).name() == 'WATCHED'}"/>
-                            </h:form>
-                        </h:column>
-                    </h:dataTable>
-                    <br/>
-                </h:column>
-            </h:dataTable>
-
-            <hr/>
-            <h3>Avis des viewers</h3>
-
-            <h:dataTable value="#{seriesBean.selectedSeries.reviews}" var="review"
-                         border="1" cellpadding="5">
-                <h:column>
-                    <f:facet name="header">Utilisateur</f:facet>
-                    #{review.viewer.displayName}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Note</f:facet>
-                    #{review.rating}/5
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Commentaire</f:facet>
-                    #{review.comment}
-                </h:column>
-            </h:dataTable>
+            <h3>Reviews</h3>
+            <h:panelGroup rendered="#{empty seriesBean.selectedSeries.reviews}">
+                <p class="text-muted fst-italic">No reviews yet.</p>
+            </h:panelGroup>
+            <div class="row g-3 mb-4">
+                <ui:repeat value="#{seriesBean.selectedSeries.reviews}" var="review">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <strong>#{review.viewer.displayName}</strong>
+                                    <span class="badge bg-warning text-dark">#{review.rating}/5</span>
+                                </div>
+                                <p class="mb-0 mt-1 small">#{review.comment}</p>
+                            </div>
+                        </div>
+                    </div>
+                </ui:repeat>
+            </div>
 
             <h:panelGroup rendered="#{accountService.viewer}">
-                <h3>Donner mon avis</h3>
-                <h:form>
-                    <h:outputLabel value="Note (1-5) : "/>
-                    <h:inputText value="#{reviewBean.rating}" required="true"/><br/><br/>
-
-                    <h:outputLabel value="Commentaire : "/><br/>
-                    <h:inputTextarea value="#{reviewBean.comment}" rows="3" cols="40"/>
-                    <br/><br/>
-
-                    <h:commandButton value="Publier mon avis"
-                                     action="#{reviewBean.addReview(seriesBean.selectedSeries)}"/>
-                </h:form>
+                <h3>Leave a review</h3>
+                <div class="card p-3" style="max-width:480px;">
+                    <h:form>
+                        <div class="mb-3">
+                            <label class="form-label">Rating (1-5)</label>
+                            <h:inputText value="#{reviewBean.rating}" required="true"
+                                         styleClass="form-control" style="max-width:80px;"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Comment</label>
+                            <h:inputTextarea value="#{reviewBean.comment}" rows="3" styleClass="form-control"/>
+                        </div>
+                        <h:commandButton value="Submit" styleClass="btn btn-primary"
+                                         action="#{reviewBean.addReview(seriesBean.selectedSeries)}"/>
+                    </h:form>
+                </div>
             </h:panelGroup>
 
         </h:panelGroup>
-
     </ui:define>
-
 </ui:composition>
 </html>

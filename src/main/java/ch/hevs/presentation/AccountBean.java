@@ -2,8 +2,10 @@ package ch.hevs.presentation;
 
 import ch.hevs.service.AccountService;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.IOException;
 
 @Named
 @RequestScoped
@@ -38,7 +40,15 @@ public class AccountBean {
 
     public String logout() {
         accountService.logout();
-        return "index?faces-redirect=true";
+        return "login?faces-redirect=true";
+    }
+
+    public void requireLogin() throws IOException {
+        if (!accountService.isLoggedIn()) {
+            FacesContext.getCurrentInstance()
+                .getExternalContext()
+                .redirect("login.xhtml");
+        }
     }
 
     public String getUsername() { return username; }

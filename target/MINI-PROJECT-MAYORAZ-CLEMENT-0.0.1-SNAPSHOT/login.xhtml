@@ -3,33 +3,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html">
-
 <ui:composition template="/WEB-INF/templates/BasicTemplate.xhtml">
-
-    <ui:define name="title">Connexion</ui:define>
-
+    <ui:define name="title">Login</ui:define>
     <ui:define name="content">
-
-        <h2>Connexion</h2>
-
-        <h:form>
-            <h:outputLabel value="Nom d'utilisateur : "/><br/>
-            <h:inputText value="#{accountBean.username}" required="true"/><br/><br/>
-
-            <h:outputLabel value="Mot de passe : "/><br/>
-            <h:inputSecret value="#{accountBean.password}" required="true"/><br/><br/>
-
-            <h:commandButton value="Se connecter" action="#{accountBean.login}"/>
-            <br/><br/>
-
-            <h:outputText value="#{accountBean.errorMessage}" style="color:red"
-                          rendered="#{not empty accountBean.errorMessage}"/>
-        </h:form>
-
-        <br/>
-        <h:link value="Pas encore de compte ? S'inscrire" outcome="register"/>
-
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <h2 class="mb-4">Login</h2>
+                <div class="card p-4">
+                    <h:form>
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <h:inputText value="#{accountBean.username}" required="true" styleClass="form-control"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <h:inputSecret value="#{accountBean.password}" required="true" styleClass="form-control"/>
+                        </div>
+                        <h:commandButton value="Login" action="#{accountBean.login}"
+                                         styleClass="btn btn-primary w-100"/>
+                        <h:outputText value="#{accountBean.errorMessage}"
+                                      styleClass="text-danger d-block mt-2"
+                                      rendered="#{not empty accountBean.errorMessage}"/>
+                    </h:form>
+                </div>
+                <p class="mt-3 text-center">
+                    No account? <h:link value="Sign up" outcome="register"/>
+                </p>
+            </div>
+        </div>
     </ui:define>
-
 </ui:composition>
 </html>

@@ -1,28 +1,30 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html">
 <body>
-<div style="width:100%;font-size:36px;line-height:48px;background-color:#1a1a2e;color:white;padding-left:20px">
-    Series App
-</div>
-<div style="background-color:#16213e;color:white;padding:8px 20px">
-    <h:panelGroup rendered="#{accountService.loggedIn}">
-        Bonjour <b>#{accountService.loggedAccount.displayName}</b> |
-        <h:form style="display:inline">
-            <h:commandLink action="index" value="Accueil" style="color:white"/> |
-            <h:commandLink action="#{accountBean.logout}" value="Se déconnecter" style="color:white"/>
-            <h:commandLink action="admin" rendered="#{accountService.admin}"
-                           value=" | Administration" style="color:white"/>
-        </h:form>
-    </h:panelGroup>
-    <h:panelGroup rendered="#{!accountService.loggedIn}">
-        <h:form style="display:inline">
-            <h:commandLink action="login" value="Se connecter" style="color:white"/> |
-            <h:commandLink action="register" value="S'inscrire" style="color:white"/>
-        </h:form>
-    </h:panelGroup>
-</div>
-<br/>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <span class="navbar-brand fw-bold">Series App</span>
+        <div class="d-flex gap-2 align-items-center">
+            <h:panelGroup rendered="#{accountService.loggedIn}">
+                <span class="navbar-text me-2">#{accountService.loggedAccount.displayName}</span>
+                <h:form styleClass="d-flex gap-2">
+                    <h:commandLink action="index" value="Home" styleClass="btn btn-outline-light btn-sm"/>
+                    <h:commandLink action="admin" rendered="#{accountService.admin}"
+                                   value="Admin" styleClass="btn btn-warning btn-sm"/>
+                    <h:commandLink action="#{accountBean.logout}" value="Logout"
+                                   styleClass="btn btn-outline-danger btn-sm"/>
+                </h:form>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{!accountService.loggedIn}">
+                <h:form styleClass="d-flex gap-2">
+                    <h:commandLink action="login" value="Login" styleClass="btn btn-outline-light btn-sm"/>
+                    <h:commandLink action="register" value="Sign up" styleClass="btn btn-primary btn-sm"/>
+                </h:form>
+            </h:panelGroup>
+        </div>
+    </div>
+</nav>
 </body>
 </html>
