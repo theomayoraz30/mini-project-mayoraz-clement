@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="/WEB-INF/templates/BasicTemplate.xhtml">
+
+    <ui:define name="title">#{seriesBean.selectedSeries.title}</ui:define>
+
+    <ui:define name="content">
+
+        <h:link value="← Retour à l'accueil" outcome="index"/>
+        <br/><br/>
+
+        <h:panelGroup rendered="#{seriesBean.selectedSeries != null}">
+
+            <h2>#{seriesBean.selectedSeries.title}
+                (#{seriesBean.selectedSeries.releaseYear})</h2>
+
+            <h:graphicImage value="#{seriesBean.selectedSeries.posterUrl}" width="200"
+                            rendered="#{not empty seriesBean.selectedSeries.posterUrl}"/>
+
+            <p>#{seriesBean.selectedSeries.description}</p>
+
+            <hr/>
+            <h3>Saisons et épisodes</h3>
+
+            <h:dataTable value="#{seriesBean.selectedSeries.seasons}" var="season">
+                <h:column>
+                    <h4>Saison #{season.seasonNumber} — #{season.title}</h4>
+                    <h:dataTable value="#{season.episodes}" var="episode"
+                                 border="1" cellpadding="5">
+                        <h:column>
+                            <f:facet name="header">Ep.</f:facet>
+                            #{episode.episodeNumber}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Titre</f:facet>
+                            #{episode.title}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Durée</f:facet>
+                            #{episode.durationMinutes} min
+                        </h:column>
+                        <h:column rendered="#{accountService.viewer}">
+                            <f:facet name="header">Statut</f:facet>
+                            <h:form>
+                                <h:commandButton value="Marquer vu"
+                                                 action="#{progressBean.markWatched(episode)}"
+                                                 rendered="#{progressBean.getEpisodeStatus(episode).name() == 'NOT_WATCHED'}"/>
+                                <h:outputText value="✓ Regardé"
+                                              rendered="#{progressBean.getEpisodeStatus(episode).name() == 'WATCHED'}"/>
+                            </h:form>
+                        </h:column>
+                    </h:dataTable>
+                    <br/>
+                </h:column>
+            </h:dataTable>
+
+            <hr/>
+            <h3>Avis des viewers</h3>
+
+            <h:dataTable value="#{seriesBean.selectedSeries.reviews}" var="review"
+                         border="1" cellpadding="5">
+                <h:column>
+                    <f:facet name="header">Utilisateur</f:facet>
+                    #{review.viewer.displayName}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Note</f:facet>
+                    #{review.rating}/5
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Commentaire</f:facet>
+                    #{review.comment}
+                </h:column>
+            </h:dataTable>
+
+            <h:panelGroup rendered="#{accountService.viewer}">
+                <h3>Donner mon avis</h3>
+                <h:form>
+                    <h:outputLabel value="Note (1-5) : "/>
+                    <h:inputText value="#{reviewBean.rating}" required="true"/><br/><br/>
+
+                    <h:outputLabel value="Commentaire : "/><br/>
+                    <h:inputTextarea value="#{reviewBean.comment}" rows="3" cols="40"/>
+                    <br/><br/>
+
+                    <h:commandButton value="Publier mon avis"
+                                     action="#{reviewBean.addReview(seriesBean.selectedSeries)}"/>
+                </h:form>
+            </h:panelGroup>
+
+        </h:panelGroup>
+
+    </ui:define>
+
+</ui:composition>
+</html>

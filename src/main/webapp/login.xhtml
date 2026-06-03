@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="/WEB-INF/templates/BasicTemplate.xhtml">
+
+    <ui:define name="title">Connexion</ui:define>
+
+    <ui:define name="content">
+
+        <h2>Connexion</h2>
+
+        <h:form>
+            <h:outputLabel value="Nom d'utilisateur : "/><br/>
+            <h:inputText value="#{accountBean.username}" required="true"/><br/><br/>
+
+            <h:outputLabel value="Mot de passe : "/><br/>
+            <h:inputSecret value="#{accountBean.password}" required="true"/><br/><br/>
+
+            <h:commandButton value="Se connecter" action="#{accountBean.login}"/>
+            <br/><br/>
+
+            <h:outputText value="#{accountBean.errorMessage}" style="color:red"
+                          rendered="#{not empty accountBean.errorMessage}"/>
+        </h:form>
+
+        <br/>
+        <h:link value="Pas encore de compte ? S'inscrire" outcome="register"/>
+
+    </ui:define>
+
+</ui:composition>
+</html>

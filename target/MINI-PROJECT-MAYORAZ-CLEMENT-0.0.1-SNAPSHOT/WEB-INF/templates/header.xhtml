@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+<body>
+<div style="width:100%;font-size:36px;line-height:48px;background-color:#1a1a2e;color:white;padding-left:20px">
+    Series App
+</div>
+<div style="background-color:#16213e;color:white;padding:8px 20px">
+    <h:panelGroup rendered="#{accountService.loggedIn}">
+        Bonjour <b>#{accountService.loggedAccount.displayName}</b> |
+        <h:form style="display:inline">
+            <h:commandLink action="index" value="Accueil" style="color:white"/> |
+            <h:commandLink action="#{accountBean.logout}" value="Se déconnecter" style="color:white"/>
+            <h:commandLink action="admin" rendered="#{accountService.admin}"
+                           value=" | Administration" style="color:white"/>
+        </h:form>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{!accountService.loggedIn}">
+        <h:form style="display:inline">
+            <h:commandLink action="login" value="Se connecter" style="color:white"/> |
+            <h:commandLink action="register" value="S'inscrire" style="color:white"/>
+        </h:form>
+    </h:panelGroup>
+</div>
+<br/>
+</body>
+</html>

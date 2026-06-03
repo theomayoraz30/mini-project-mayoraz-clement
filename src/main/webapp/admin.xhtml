@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="/WEB-INF/templates/BasicTemplate.xhtml">
+
+    <ui:define name="title">Administration</ui:define>
+
+    <ui:define name="content">
+
+        <h:panelGroup rendered="#{!accountService.admin}">
+            <h2 style="color:red">Accès refusé.</h2>
+            <h:link value="Retour à l'accueil" outcome="index"/>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{accountService.admin}">
+
+            <h2>Administration — Gestion des séries</h2>
+
+            <h3>Ajouter une série</h3>
+            <h:form>
+                <h:outputLabel value="Titre : "/><br/>
+                <h:inputText value="#{seriesBean.newSeries.title}" required="true"/><br/><br/>
+
+                <h:outputLabel value="Description : "/><br/>
+                <h:inputTextarea value="#{seriesBean.newSeries.description}"
+                                 rows="3" cols="40"/><br/><br/>
+
+                <h:outputLabel value="Année de sortie : "/><br/>
+                <h:inputText value="#{seriesBean.newSeries.releaseYear}"/><br/><br/>
+
+                <h:outputLabel value="URL Poster : "/><br/>
+                <h:inputText value="#{seriesBean.newSeries.posterUrl}" size="60"/><br/><br/>
+
+                <h:commandButton value="Ajouter la série" action="#{seriesBean.addSeries}"/>
+            </h:form>
+
+            <hr/>
+
+            <h3>Séries existantes</h3>
+            <h:dataTable value="#{seriesBean.seriesList}" var="s" border="1" cellpadding="5">
+                <h:column>
+                    <f:facet name="header">Titre</f:facet>
+                    #{s.title}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Année</f:facet>
+                    #{s.releaseYear}
+                </h:column>
+                <h:column>
+                    <h:form>
+                        <h:commandButton value="Supprimer"
+                                         action="#{seriesBean.deleteSeries(s)}"
+                                         onclick="return confirm('Supprimer cette série ?')"/>
+                    </h:form>
+                </h:column>
+            </h:dataTable>
+
+        </h:panelGroup>
+
+    </ui:define>
+
+</ui:composition>
+</html>

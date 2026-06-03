@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="/WEB-INF/templates/BasicTemplate.xhtml">
+
+    <ui:define name="title">Series App — Accueil</ui:define>
+
+    <ui:define name="content">
+
+        <h2>Toutes les séries</h2>
+
+        <h:form>
+            <h:inputText value="#{seriesBean.searchQuery}" placeholder="Rechercher une série..."/>
+            <h:commandButton value="Rechercher" action="#{seriesBean.search}"/>
+            <h:commandButton value="Tout afficher" action="#{seriesBean.loadAll}"/>
+        </h:form>
+
+        <br/>
+
+        <h:dataTable value="#{seriesBean.seriesList}" var="s" border="1" cellpadding="8">
+            <h:column>
+                <f:facet name="header">Poster</f:facet>
+                <h:graphicImage value="#{s.posterThumbnailUrl}" width="60"
+                                rendered="#{not empty s.posterThumbnailUrl}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Titre</f:facet>
+                #{s.title}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Année</f:facet>
+                #{s.releaseYear}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Description</f:facet>
+                #{s.description}
+            </h:column>
+            <h:column>
+                <h:form>
+                    <h:commandButton value="Voir détails"
+                                     action="#{seriesBean.selectSeries(s)}"/>
+                </h:form>
+            </h:column>
+        </h:dataTable>
+
+    </ui:define>
+
+</ui:composition>
+</html>

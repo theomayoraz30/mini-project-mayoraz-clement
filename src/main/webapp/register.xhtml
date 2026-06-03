@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="/WEB-INF/templates/BasicTemplate.xhtml">
+
+    <ui:define name="title">Inscription</ui:define>
+
+    <ui:define name="content">
+
+        <h2>Créer un compte</h2>
+
+        <h:form>
+            <h:outputLabel value="Nom d'utilisateur : "/><br/>
+            <h:inputText value="#{accountBean.username}" required="true"/><br/><br/>
+
+            <h:outputLabel value="Mot de passe : "/><br/>
+            <h:inputSecret value="#{accountBean.password}" required="true"/><br/><br/>
+
+            <h:outputLabel value="Email : "/><br/>
+            <h:inputText value="#{accountBean.email}"/><br/><br/>
+
+            <h:outputLabel value="Nom affiché : "/><br/>
+            <h:inputText value="#{accountBean.displayName}"/><br/><br/>
+
+            <h:commandButton value="S'inscrire" action="#{accountBean.register}"/>
+            <br/><br/>
+
+            <h:outputText value="#{accountBean.errorMessage}" style="color:red"
+                          rendered="#{not empty accountBean.errorMessage}"/>
+        </h:form>
+
+        <br/>
+        <h:link value="Déjà un compte ? Se connecter" outcome="login"/>
+
+    </ui:define>
+
+</ui:composition>
+</html>
