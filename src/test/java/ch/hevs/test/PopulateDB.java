@@ -43,7 +43,7 @@ public class PopulateDB extends TestCase {
 
 			// Série 1 : Breaking Bad
 			Series bb = new Series("Breaking Bad", "Un professeur de chimie devient fabricant de drogue.", 2008);
-			bb.setPosterUrl("https://upload.wikimedia.org/wikipedia/en/6/61/Breaking_Bad_title_card.png");
+			bb.setPosterUrl("https://i.ebayimg.com/images/g/HZ0AAOSwolNkPYqj/s-l1200.jpg");
 			em.persist(bb);
 
 			Season s1bb = new Season(1, "Saison 1", "Les débuts de Walter White.", bb);
@@ -58,6 +58,7 @@ public class PopulateDB extends TestCase {
 
 			// Série 2 : Game of Thrones
 			Series got = new Series("Game of Thrones", "Des familles nobles se disputent le trône de fer.", 2011);
+			got.setPosterUrl("https://media.desenio.com/site_images/68631b7825436f8361d76848_1909015694_WB0026-5.jpg");
 			em.persist(got);
 
 			Season s1got = new Season(1, "Saison 1", "Le début des guerres.", got);
@@ -70,8 +71,8 @@ public class PopulateDB extends TestCase {
 
 			// Série 3 : Stranger Things
 			Series st = new Series("Stranger Things", "Des enfants affrontent des forces surnaturelles.", 2016);
+			st.setPosterUrl("https://image.tmdb.org/t/p/original/uOOtwVbSr4QDjAGIifLDwpb2Pdl.jpg");
 			em.persist(st);
-
 			Season s1st = new Season(1, "Saison 1", "La disparition de Will.", st);
 			em.persist(s1st);
 
