@@ -1,27 +1,24 @@
 package ch.hevs.service;
 
 import ch.hevs.businessobject.*;
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
-import java.io.Serializable;
 import java.util.List;
 
 @Named
-@SessionScoped
-public class SeriesService implements Serializable {
+@ApplicationScoped
+public class SeriesService {
 
     @PersistenceContext(unitName = "seriesPU")
     private EntityManager em;
 
-    @Transactional
     public List<Series> findAll() {
         return em.createQuery("SELECT s FROM Series s ORDER BY s.title", Series.class)
                 .getResultList();
     }
 
-    @Transactional
     public List<Series> findByTitle(String title) {
         return em.createQuery(
                         "SELECT s FROM Series s WHERE LOWER(s.title) LIKE :title ORDER BY s.title",
@@ -70,7 +67,6 @@ public class SeriesService implements Serializable {
         em.persist(season);
     }
 
-    @Transactional
     public Season findSeasonById(Long id) {
         return em.find(Season.class, id);
     }

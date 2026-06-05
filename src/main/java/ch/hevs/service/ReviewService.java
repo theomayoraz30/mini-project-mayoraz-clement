@@ -1,16 +1,15 @@
 package ch.hevs.service;
 
 import ch.hevs.businessobject.*;
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
-import java.io.Serializable;
 import java.util.List;
 
 @Named
-@SessionScoped
-public class ReviewService implements Serializable {
+@ApplicationScoped
+public class ReviewService {
 
     @PersistenceContext(unitName = "seriesPU")
     private EntityManager em;

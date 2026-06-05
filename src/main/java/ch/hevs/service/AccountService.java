@@ -17,7 +17,6 @@ public class AccountService implements Serializable {
 
     private Account loggedAccount = null;
 
-    @Transactional
     public boolean login(String username, String password) {
         List<Account> results = em.createQuery(
                         "SELECT a FROM Account a WHERE a.username = :u AND a.passwordHash = :p",

@@ -1,17 +1,16 @@
 package ch.hevs.service;
 
 import ch.hevs.businessobject.*;
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Named
-@SessionScoped
-public class ProgressService implements Serializable {
+@ApplicationScoped
+public class ProgressService{
 
     @PersistenceContext(unitName = "seriesPU")
     private EntityManager em;
@@ -72,7 +71,6 @@ public class ProgressService implements Serializable {
         return sp;
     }
 
-    @Transactional
     public ProgressStatus computeSeriesStatus(Viewer viewer, Series series) {
         long total = em.createQuery(
                 "SELECT COUNT(e) FROM Episode e WHERE e.season.series = :s", Long.class)
