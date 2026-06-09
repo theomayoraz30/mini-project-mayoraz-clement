@@ -24,13 +24,23 @@ public class PopulateDB extends TestCase {
 			tx.begin();
 
 			// Vérifier si les données existent déjà
-			Long count = em.createQuery("SELECT COUNT(a) FROM Account a", Long.class)
-					.getSingleResult();
-			if (count > 0) {
-				System.out.println("DB déjà peuplée (" + count + " comptes), rien à faire.");
-				tx.rollback();
-				return;
-			}
+            // Vérifier si les données existent déjà
+            Long count = em.createQuery("SELECT COUNT(a) FROM Account a", Long.class)
+                    .getSingleResult();
+            if (count > 0) {
+                System.out.println("DB déjà peuplée (" + count + " comptes), suppression en cours...");
+
+                // Supprimer dans l'ordre pour respecter les FK
+                em.createQuery("DELETE FROM EpisodeProgress").executeUpdate();
+                em.createQuery("DELETE FROM SeriesProgress").executeUpdate();
+                em.createQuery("DELETE FROM Review").executeUpdate();
+                em.createQuery("DELETE FROM Episode").executeUpdate();
+                em.createQuery("DELETE FROM Season").executeUpdate();
+                em.createQuery("DELETE FROM Series").executeUpdate();
+                em.createQuery("DELETE FROM Account").executeUpdate();
+
+                System.out.println("Suppression terminée, re-peuplement...");
+            }
 
 			// Comptes
 			Administrator admin = new Administrator("admin", "admin123", "admin@series.ch", "Administrateur");
